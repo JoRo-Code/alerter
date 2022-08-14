@@ -2,13 +2,11 @@ from send.sender import Sender
 from alerter import Alerter
 from credentials import PASSWORD, EMAIL
 from config import HOST, PORT
+from condition.condition import fetchSlots
+from message import Message
 
 DEBUG = True
 
-class Message():
-    def __init__(self, subject, body):
-        self.subject = subject
-        self.body = body
         
 def main():
     sender = Sender(
@@ -24,14 +22,18 @@ def main():
         body="Test body",
     )
     
-    receivers= ["test@gmail.com"]
+    receivers= ["test@gmail.com",
+                ]
     
     a = Alerter(sender=sender, 
                 message=message,
-                receivers = receivers
+                receivers = receivers,
+                error_receivers = receivers,
+                _condition = fetchSlots,
+                debug=DEBUG,
                 )
     
-    a.alertAll()
+    a.run()
 
 if __name__ == '__main__':
     main()
