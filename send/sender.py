@@ -39,6 +39,7 @@ class Sender():
         session.starttls() #enable security
         session.login(sender_address, sender_pass) #login with mail_id and password
 
+
         #sending message
         session.sendmail(sender_address, receiver_address, message.as_string())
         if self.debug: print(f"{MAIL_SENT_MSG} '{receiver_address}'")

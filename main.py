@@ -1,11 +1,17 @@
 from send.sender import Sender
+from alerter import Alerter
 from credentials import PASSWORD, EMAIL
 from config import HOST, PORT
 
 DEBUG = True
 
+class Message():
+    def __init__(self, subject, body):
+        self.subject = subject
+        self.body = body
+        
 def main():
-    s = Sender(
+    sender = Sender(
         password= PASSWORD,
         email= EMAIL,
         host= HOST,
@@ -13,14 +19,19 @@ def main():
         debug=DEBUG,
     )
     
-    body = "Test body"
-    subject = "Test subject"
-    receiver_address = "test@gmail.com"
+    message = Message(
+        subject="Test subject",
+        body="Test body",
+    )
     
-    s.send_message(body=body,
-                   subject=subject, 
-                   receiver_address=receiver_address,
-                   )
+    receivers= ["test@gmail.com"]
+    
+    a = Alerter(sender=sender, 
+                message=message,
+                receivers = receivers
+                )
+    
+    a.alertAll()
 
 if __name__ == '__main__':
     main()
