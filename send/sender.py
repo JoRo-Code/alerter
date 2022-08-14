@@ -3,9 +3,9 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-from alerter.strings import MAIL_SENT_MSG, INIT_ALERTER_MSG
+from send.strings import MAIL_SENT_MSG, INIT_SENDER_MSG
 
-class Alerter():
+class Sender():
     def __init__(self, 
                  password,
                  email,
@@ -19,7 +19,7 @@ class Alerter():
         self.port = port
         self.debug = debug
         
-        if self.debug: print(INIT_ALERTER_MSG)
+        if self.debug: print(INIT_SENDER_MSG)
     
     def send_message(self, body, subject, receiver_address):
         sender_address = self.email

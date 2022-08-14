@@ -1,12 +1,11 @@
-from blinker import receiver_connected
-from alerter.alerter import Alerter
+from send.sender import Sender
 from credentials import PASSWORD, EMAIL
 from config import HOST, PORT
 
 DEBUG = True
 
 def main():
-    a = Alerter(
+    s = Sender(
         password= PASSWORD,
         email= EMAIL,
         host= HOST,
@@ -18,7 +17,7 @@ def main():
     subject = "Test subject"
     receiver_address = "test@gmail.com"
     
-    a.send_message(body=body,
+    s.send_message(body=body,
                    subject=subject, 
                    receiver_address=receiver_address,
                    )
