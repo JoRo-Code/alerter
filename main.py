@@ -25,7 +25,7 @@ def main():
     receivers= ["test@gmail.com",
                 ]
     
-    a = Alerter(sender=sender, 
+    a = Alerter(sender=sender,
                 message=message,
                 receivers = receivers,
                 error_receivers = receivers,
@@ -33,7 +33,7 @@ def main():
                 debug=DEBUG,
                 )
     
-    a.run()
+    a.run_with_waiting_time(wait_time=5, _break_func=lambda: False)
 
 if __name__ == '__main__':
     main()

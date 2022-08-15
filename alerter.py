@@ -1,5 +1,7 @@
 
 from message import Message
+from time import sleep
+from datetime import datetime
 
 NEGATIVE_CONDITION_MSG = "Negative condition: checked but false"
 ERROR_SUBJECT_STR = "Error Message"
@@ -14,7 +16,7 @@ class Alerter():
                  receivers, 
                  error_receivers, 
                  _condition, 
-                 debug=False
+                 debug=False,
                  ):
         self.sender = sender
         self.message = message
@@ -41,7 +43,17 @@ class Alerter():
         
     def errorAlertAll(self, error_message):
         self.alertAll(self.error_receivers, error_message) 
-        
+    
+    def run_with_waiting_time(self, wait_time, _break_func):
+        self.scheduler(wait_time=wait_time, _callback=self.run,_conditionFunc=_break_func)
+
+    def scheduler(self, wait_time, _callback, _conditionFunc):
+        while not _conditionFunc():
+            if self.debug: print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+
+            sleep(wait_time)
+            _callback()
+         
     def run(self):
         try:
             if self.debug: print(CHECKING_CONDITION_MSG)
