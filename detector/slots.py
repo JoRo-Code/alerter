@@ -1,5 +1,5 @@
 import requests
-from exceptions import ParseException, FetchException
+from detector.exceptions import ParseException, FetchException
 import sys
 import traceback
 import random

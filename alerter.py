@@ -3,11 +3,11 @@ from message import Message
 from time import sleep
 from datetime import datetime
 
-NEGATIVE_CONDITION_MSG = "Negative condition: checked but false"
+NEGATIVE_DETECTOR_MSG = "Negative detector: checked but false"
 ERROR_SUBJECT_STR = "Error Message"
 INIT_ALERTER_MSG = "Initalized Alerter"
-CHECKING_CONDITION_MSG = "Checking condition"
-ALERT_MSG = "Condition True: Alerting all"
+CHECKING_DETECTOR_MSG = "Checking detector"
+ALERT_MSG = "Detector True: Alerting all"
 
 class Alerter():
     def __init__(self, 
@@ -15,14 +15,14 @@ class Alerter():
                  message, 
                  receivers, 
                  error_receivers, 
-                 _condition, 
+                 _detector, 
                  debug=False,
                  ):
         self.sender = sender
         self.message = message
         self.receivers = receivers
         self.error_receivers = error_receivers
-        self._condition = _condition
+        self._detector = _detector
         self.debug = debug
         
         if self.debug: print(INIT_ALERTER_MSG)
@@ -45,10 +45,10 @@ class Alerter():
         self.alertAll(self.error_receivers, error_message) 
     
     def run_with_waiting_time(self, wait_time, _break_func):
-        self.scheduler(wait_time=wait_time, _callback=self.run,_conditionFunc=_break_func)
+        self.scheduler(wait_time=wait_time, _callback=self.run,_detectorFunc=_break_func)
 
-    def scheduler(self, wait_time, _callback, _conditionFunc):
-        while not _conditionFunc():
+    def scheduler(self, wait_time, _callback, _detectorFunc):
+        while not _detectorFunc():
             if self.debug: print(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
             sleep(wait_time)
@@ -56,8 +56,8 @@ class Alerter():
          
     def run(self):
         try:
-            if self.debug: print(CHECKING_CONDITION_MSG)
-            shouldAlert = self._condition()
+            if self.debug: print(CHECKING_DETECTOR_MSG)
+            shouldAlert = self._detector()
             
         except Exception as e:
             if self.debug: print(e)
@@ -74,7 +74,7 @@ class Alerter():
                 if self.debug: print(ALERT_MSG)
                 self.defaultAlertAll()
             else:
-                if self.debug: print(NEGATIVE_CONDITION_MSG)
+                if self.debug: print(NEGATIVE_DETECTOR_MSG)
                 
         
     

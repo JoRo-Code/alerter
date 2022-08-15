@@ -1,6 +1,6 @@
 
 # What?
-Alerts given a certain condition
+Alerts given a certain detector
 
 ## Requirements
 - python3 

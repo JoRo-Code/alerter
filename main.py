@@ -2,7 +2,7 @@ from send.sender import Sender
 from alerter import Alerter
 from credentials import PASSWORD, EMAIL
 from config import HOST, PORT
-from condition.condition import fetchSlots
+from detector.slots import fetchSlots
 from message import Message
 
 DEBUG = True
@@ -29,7 +29,7 @@ def main():
                 message=message,
                 receivers = receivers,
                 error_receivers = receivers,
-                _condition = fetchSlots,
+                _detector = fetchSlots,
                 debug=DEBUG,
                 )
     
