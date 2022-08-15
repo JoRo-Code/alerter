@@ -1,7 +1,8 @@
 import requests
-from condition.exceptions import ParseException, FetchException
+from exceptions import ParseException, FetchException
 import sys
 import traceback
+import random
 
 services = {
     "Stallag fodervärd": 106767, 
@@ -14,7 +15,9 @@ services = {
 }
 
 def getUrl(serviceId):
-    url = f"https://www.bokadirekt.se/api/book/{(serviceId)}/12384/1670288400000/10650?reborn=true"
+    sessionId = str(random.randint(1000000,9999999))+"00000"
+
+    url = f"https://www.bokadirekt.se/api/book/{(serviceId)}/12384/{sessionId}/10650?reborn=true"
     return url
     
 def getJson(serviceId):
@@ -29,10 +32,12 @@ def getJson(serviceId):
 
 def parse(data):
     try:
-        return data["availability"]["fromErpOverview"]["datesWithOpeningHours"]
+        result = data["availability"]["fromErpOverview"]["datesWithOpeningHours"]
     except Exception:
         exc_type, value, tb = sys.exc_info()
         raise ParseException(str(exc_type.__name__) + ": " + str(value) + str(traceback.extract_tb(tb)))
+    else:
+        return result
 
 
 def fetchSlotsByService(serviceId):
