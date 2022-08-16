@@ -3,7 +3,9 @@ from alerter import Alerter
 from credentials import PASSWORD, EMAIL
 from config import HOST, PORT
 from detector.slots import fetchSlots
+from detector.services import checkIsUpdatedServices
 from message import Message
+from check import Check
 
 DEBUG = True
 
@@ -17,19 +19,36 @@ def main():
         debug=DEBUG,
     )
     
-    message = Message(
-        subject="Test subject",
-        body="Test body",
-    )
-    
     receivers= ["test@gmail.com",
                 ]
     
+    foundSlotsMessage = Message(
+        subject="Alert",
+        body="Found slots",
+    )
+    
+    foundServicesMessage = Message(
+        subject="Alert",
+        body="Found services",
+    )
+    
+    
+    checks = [
+        Check(name="Slots",
+              message = foundSlotsMessage,
+              _check = fetchSlots,
+              ),
+        Check(name="Services",
+              message = foundServicesMessage,
+              _check = checkIsUpdatedServices,
+              )
+    ]
+    
+    
     a = Alerter(sender=sender,
-                message=message,
                 receivers = receivers,
                 error_receivers = receivers,
-                _detector = fetchSlots,
+                checks = checks,
                 debug=DEBUG,
                 )
     
