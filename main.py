@@ -2,14 +2,13 @@ from send.sender import Sender
 from alerter import Alerter
 from credentials import PASSWORD, EMAIL
 from config import HOST, PORT
-from detector.slots import fetchSlots
-from detector.services import checkIsUpdatedServices
+from checks.slots import fetchSlots
+from checks.services import checkIsUpdatedServices
 from message import Message
-from check import Check
+from checks.check import Check
 
 DEBUG = True
 
-        
 def main():
     sender = Sender(
         password= PASSWORD,

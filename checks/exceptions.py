@@ -1,4 +1,4 @@
-class FetchError(Exception):
+class CheckException(Exception):
     def __init__(self, message, name="FetchError"):
         self.message = message
         self.name = name
@@ -8,14 +8,14 @@ class FetchError(Exception):
     def __str__(self):
         return self.name + ": " + self.message
 
-class ParseException(FetchError):
+class ParseException(CheckException):
     """Raised when the data couldn't be parsed"""
     def __init__(self, message):
         self.message = message
         self.name = "ParseException"
         
         
-class FetchException(FetchError):
+class FetchException(CheckException):
     """Raised when the data couldn't be fetched"""
     def __init__(self, message):
         self.message = message
