@@ -2,8 +2,11 @@ import requests
 from bs4 import BeautifulSoup
 from tinydb import TinyDB
 from datetime import datetime
+import os
 
-db = TinyDB('services.json')
+script_dir = os.path.dirname(os.path.realpath(__file__))
+db_file = script_dir + "/" + "services.json"
+db = TinyDB(db_file)
 SERVICES_KEY = 'services'
 
 def addToDB(item):

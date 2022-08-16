@@ -14,7 +14,8 @@ from persistance import load_object
 DEBUG = True
 
 ENABLE_PERSISTANCE = True
-CHECKS_FILE = "checks.pickle"
+script_dir = os.path.dirname(os.path.realpath(__file__))
+CHECKS_FILE = script_dir + "/" + "checks.pickle"
 
 def main():
     sender = Sender(
