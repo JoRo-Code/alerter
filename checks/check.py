@@ -1,3 +1,4 @@
+from datetime import datetime
 
 class Check():
     def __init__(self,
@@ -12,9 +13,17 @@ class Check():
         self.message = message
         self._check = _check
         self.isAlerted = False
+        self.lastChecked = None
+    
+    def __str__(self):
+        return f"Check(name: {self.name}, isAlerted: {self.isAlerted}, lastChecked: {self.lastChecked})"
         
     def run(self):
-        return self._check()
+        time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        result = self._check()
+        self.lastChecked = time
+        return result
         
     def setAlerted(self):
         self.isAlerted = True
+    

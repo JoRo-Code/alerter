@@ -3,6 +3,8 @@ from message import Message
 from time import sleep
 from datetime import datetime
 
+from persistance import save_object
+
 NEGATIVE_CHECK_MSG = "Negative check"
 ERROR_SUBJECT_STR = "Error Message"
 INIT_ALERTER_MSG = "Initalized Alerter"
@@ -83,12 +85,17 @@ class Alerter():
             else:
                 if self.debug: print(NEGATIVE_CHECK_MSG)
     
-    def run(self):
+    def run(self, enablePersistance=False, persistanceFile="persistance.pickle"):
+            
         for check in self.checks:
             if check.isAlerted:
                 if self.debug: print(ALREADY_ALERTED_MSG + check.name)
                 continue
             self.run_check(check)
+        
+        if enablePersistance:
+            save_object(self.checks, persistanceFile)
+            
         
                 
         

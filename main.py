@@ -1,3 +1,5 @@
+import os.path
+
 from send.sender import Sender
 from alerter import Alerter
 from credentials import PASSWORD, EMAIL
@@ -7,10 +9,12 @@ from checks.services import checkIsUpdatedServices
 from message import Message
 from checks.check import Check
 
+from persistance import load_object
+
 DEBUG = True
 
-def true():
-    return True
+ENABLE_PERSISTANCE = True
+CHECKS_FILE = "checks.pickle"
 
 def main():
     sender = Sender(
@@ -33,8 +37,7 @@ def main():
         body="Found services",
     )
     
-    
-    
+    # default checks
     checks = [
         Check(name="Slots",
               message = foundSlotsMessage,
@@ -45,6 +48,12 @@ def main():
               _check = checkIsUpdatedServices,
               )
     ]
+
+    # saved checks
+    if ENABLE_PERSISTANCE:
+        if os.path.exists(CHECKS_FILE):
+            checks = load_object(CHECKS_FILE)
+            if DEBUG: print("Loaded check info: " + str(checks[0]))
     
     
     a = Alerter(sender=sender,
@@ -54,7 +63,9 @@ def main():
                 debug=DEBUG,
                 )
     
-    a.run_with_waiting_time(wait_time=5, _break_func=a.isAllChecksAlerted)
+    #a.run_with_waiting_time(wait_time=5, _break_func=a.isAllChecksAlerted)
+    a.run(enablePersistance=ENABLE_PERSISTANCE, persistanceFile=CHECKS_FILE,)
+    
 
 
 if __name__ == '__main__':
