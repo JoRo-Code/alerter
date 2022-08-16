@@ -9,6 +9,9 @@ from checks.check import Check
 
 DEBUG = True
 
+def true():
+    return True
+
 def main():
     sender = Sender(
         password= PASSWORD,
@@ -32,6 +35,7 @@ def main():
     )
     
     
+    
     checks = [
         Check(name="Slots",
               message = foundSlotsMessage,
@@ -51,7 +55,8 @@ def main():
                 debug=DEBUG,
                 )
     
-    a.run_with_waiting_time(wait_time=5, _break_func=lambda: False)
+    a.run_with_waiting_time(wait_time=5, _break_func=a.isAllChecksAlerted)
+
 
 if __name__ == '__main__':
     main()

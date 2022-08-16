@@ -7,6 +7,7 @@ NEGATIVE_CHECK_MSG = "Negative check"
 ERROR_SUBJECT_STR = "Error Message"
 INIT_ALERTER_MSG = "Initalized Alerter"
 CHECKING_CHECK_MSG = "Checking: "
+ALREADY_ALERTED_MSG= "Skipping already alerted check: "
 ALERT_MSG = "Positive check: Alerting all"
 
 class Alerter():
@@ -36,8 +37,9 @@ class Alerter():
         for receiver in receivers:
             self.alert(receiver, message)
             
-    def checkAlertAll(self, message):
-        self.alertAll(self.receivers, message) 
+    def checkAlertAll(self, check):
+        check.setAlerted()
+        self.alertAll(self.receivers, check.message) 
         
     def errorAlertAll(self, error_message):
         self.alertAll(self.error_receivers, error_message) 
@@ -51,6 +53,13 @@ class Alerter():
 
             sleep(wait_time)
             _callback()
+    
+    def isAllChecksAlerted(self):
+        for check in self.checks:
+            if not check.isAlerted:
+                return False
+        return True
+            
          
     def run_check(self, check):
         try:
@@ -70,12 +79,15 @@ class Alerter():
         else:
             if shouldAlert:
                 if self.debug: print(ALERT_MSG)
-                self.checkAlertAll(check.message)
+                self.checkAlertAll(check)
             else:
                 if self.debug: print(NEGATIVE_CHECK_MSG)
     
     def run(self):
         for check in self.checks:
+            if check.isAlerted:
+                if self.debug: print(ALREADY_ALERTED_MSG + check.name)
+                continue
             self.run_check(check)
         
                 

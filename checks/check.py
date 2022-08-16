@@ -11,6 +11,10 @@ class Check():
         self.name = name
         self.message = message
         self._check = _check
+        self.isAlerted = False
         
     def run(self):
-        self._check()
+        return self._check()
+        
+    def setAlerted(self):
+        self.isAlerted = True
