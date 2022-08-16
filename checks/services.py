@@ -33,14 +33,14 @@ def getLastStoredServices():
 
 def checkIsUpdatedServices():
     new = fetchServices()
-
-    if not isEmptyDB():
+    isFirstCheck = isEmptyDB()
+    if not isFirstCheck:
         prev = getLastStoredServices()
 
     # update db
     addToDB(new)
     
-    if not isEmptyDB():
+    if isFirstCheck:
         return False
         
     return new != prev
