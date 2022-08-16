@@ -1,7 +1,7 @@
 from send.sender import Sender
 from alerter import Alerter
 from credentials import PASSWORD, EMAIL
-from config import HOST, PORT
+from config import HOST, PORT, RECEIVERS
 from checks.slots import fetchSlots
 from checks.services import checkIsUpdatedServices
 from message import Message
@@ -21,8 +21,7 @@ def main():
         debug=DEBUG,
     )
     
-    receivers= ["test@gmail.com",
-                ]
+    receivers = RECEIVERS 
     
     foundSlotsMessage = Message(
         subject="Alert",

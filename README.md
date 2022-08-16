@@ -7,5 +7,10 @@ Alerts given a certain check
 - libraries: smtplib, email, bs4, tinydb
 
 ## Usage
+### Setup
+- install python libraries: `pip3 install <library>`
+- add a `config.py`. See `config.example.py`
+- add a `credentials.py`. See `credentials.example.py`
 ### Run
 - `python3 main.py`
+
