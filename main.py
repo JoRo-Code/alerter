@@ -1,15 +1,16 @@
 import os.path
 
-from send.sender import Sender
-from alerter import Alerter
 from credentials import PASSWORD, EMAIL
 from config import HOST, PORT, RECEIVERS
+
+from alert.alerter import Alerter
+from alert.sender import Sender
+from alert.message import Message
+from alert.check import Check
+from alert.persistance import load_object
+
 from checks.slots import fetchSlots
 from checks.services import checkIsUpdatedServices
-from message import Message
-from checks.check import Check
-
-from persistance import load_object
 
 DEBUG = True
 

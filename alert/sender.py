@@ -3,7 +3,8 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-from send.strings import MAIL_SENT_MSG, INIT_SENDER_MSG
+INIT_SENDER_MSG = "Initialized Sender"
+MAIL_SENT_MSG = "Mail sent to"
 
 class Sender():
     def __init__(self, 

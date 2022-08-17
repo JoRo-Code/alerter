@@ -1,9 +1,9 @@
 
-from message import Message
+from alert.message import Message
 from time import sleep
 from datetime import datetime
 
-from persistance import save_object
+from alert.persistance import save_object
 
 NEGATIVE_CHECK_MSG = "Negative check"
 ERROR_SUBJECT_STR = "Error Message"
