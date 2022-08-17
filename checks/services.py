@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from tinydb import TinyDB
+from tinydb import TinyDB 
 from datetime import datetime
 import os
 
@@ -14,7 +14,40 @@ def addToDB(item):
     db.insert({SERVICES_KEY:item, 'time':time})
 
 def isEmptyDB():
-    return len(db.all()) == 0
+    return db.__len__() == 0
+
+def getLastDoc():
+    el = db.all()[-1]
+    record = db.get(doc_id=el.doc_id)
+    return record
+
+def allButLastIDs():
+    lastDoc = getLastDoc()
+    el_id = lastDoc.doc_id
+
+    result = []
+    for doc in db.all():
+        if doc.doc_id == el_id:
+            continue
+        result.append(doc.doc_id)
+    
+    return result
+    
+def removeAllButLast():
+    
+    db.remove(doc_ids=allButLastIDs())
+    
+def compressDB():
+    # TODO: use better algorithm to store history changes
+    """
+    removes all uneccessary data
+    """
+    removeAllButLast()
+
+def shouldCompressDB():
+    return db.__len__() > 100
+    
+        
 
 def fetchServices():
     url = "https://www.bokadirekt.se/places/heda-ridklubb-12384"
@@ -30,8 +63,7 @@ def fetchServices():
     return result
 
 def getLastStoredServices():
-    el = db.all()[-1]
-    record = db.get(doc_id=el.doc_id)
+    record = getLastDoc()
     return record[SERVICES_KEY]
 
 def checkIsUpdatedServices():
@@ -43,10 +75,15 @@ def checkIsUpdatedServices():
     # update db
     addToDB(new)
     
+    if shouldCompressDB():
+        compressDB()
+    
     if isFirstCheck:
         return False
         
     return new != prev
+
+        
  
 def main():
     s = checkIsUpdatedServices()
