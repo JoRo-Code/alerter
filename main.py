@@ -16,7 +16,7 @@ DEBUG = True
 
 ENABLE_PERSISTANCE = True
 script_dir = os.path.dirname(os.path.realpath(__file__))
-CHECKS_FILE = script_dir + "/" + "checks.pickle"
+CHECKS_FILE = script_dir + "/checks/" + "checks.pickle"
 
 def main():
     sender = Sender(
