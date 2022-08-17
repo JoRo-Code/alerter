@@ -1,9 +1,10 @@
+import os.path
 
 from alert.message import Message
 from time import sleep
 from datetime import datetime
 
-from alert.persistance import save_object
+from alert.persistance import save_object, load_object
 
 NEGATIVE_CHECK_MSG = "Negative check"
 ERROR_SUBJECT_STR = "Error Message"
@@ -19,12 +20,20 @@ class Alerter():
                  error_receivers, 
                  checks,
                  debug=False,
+                 persistanceFile=None
                  ):
         self.sender = sender
+        self.debug = debug
         self.receivers = receivers
         self.error_receivers = error_receivers
+        self.persistanceFile = persistanceFile
+        
+        if os.path.exists(persistanceFile):
+            checks = load_object(persistanceFile)
+            if self.debug: print("Loaded check info: " + str(checks[0]))
+        
         self.checks = checks
-        self.debug = debug
+            
         
         if self.debug: print(INIT_ALERTER_MSG)
     
@@ -85,7 +94,7 @@ class Alerter():
             else:
                 if self.debug: print(NEGATIVE_CHECK_MSG)
     
-    def run(self, enablePersistance=False, persistanceFile="persistance.pickle"):
+    def run(self):
             
         for check in self.checks:
             if check.isAlerted:
@@ -93,8 +102,8 @@ class Alerter():
                 continue
             self.run_check(check)
         
-        if enablePersistance:
-            save_object(self.checks, persistanceFile)
+        if self.persistanceFile:
+            save_object(self.checks, self.persistanceFile)
             
         
                 
