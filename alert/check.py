@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 
 class Check():
     def __init__(self,
@@ -13,7 +14,7 @@ class Check():
         self.message = message
         self._check = _check
         self.isAlerted = False
-        self.lastChecked = None
+        self.lastChecked = None 
     
     def __str__(self):
         return f"Check(name: {self.name}, isAlerted: {self.isAlerted}, lastChecked: {self.lastChecked})"
@@ -26,4 +27,8 @@ class Check():
         
     def setAlerted(self):
         self.isAlerted = True
+    
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, 
+            sort_keys=True, indent=4)
     

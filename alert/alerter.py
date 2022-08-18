@@ -5,6 +5,7 @@ from time import sleep
 from datetime import datetime
 
 from alert.persistance import save_object, load_object
+from alert.persistance import Logger
 
 NEGATIVE_CHECK_MSG = "Negative check"
 ERROR_SUBJECT_STR = "Error Message"
@@ -20,7 +21,8 @@ class Alerter():
                  error_receivers, 
                  checks,
                  debug=False,
-                 persistanceFile=None
+                 persistanceFile=None,
+                 loggerFile=None,
                  ):
         self.sender = sender
         self.debug = debug
@@ -33,16 +35,27 @@ class Alerter():
             if self.debug: print("Loaded check info: " + str(checks[0]))
         
         self.checks = checks
-            
+        
+        self.logger = None
+        if os.path.exists(loggerFile):
+            self.logger = Logger(loggerFile=loggerFile)
         
         if self.debug: print(INIT_ALERTER_MSG)
     
+    def log(self, message):
+        if self.logger:
+            log = {'message':str(message),
+                'checks': [str(x) for x in self.checks],
+            }
+            self.logger.add(log)
+        
     def alert(self, receiver, message):
         m = message 
         self.sender.send_message(body=m.body,
                                 subject=m.subject, 
                                 receiver_address=receiver,
                                 )
+        self.log(message=message)
 
     def alertAll(self, receivers, message):
         for receiver in receivers:

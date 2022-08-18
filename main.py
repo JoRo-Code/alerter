@@ -14,6 +14,7 @@ DEBUG = True
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 CHECKS_FILE = script_dir + "/checks/" + "checks.pickle"
+LOG_FILE= script_dir + "/" + "logger.json"
 
 def main():
     sender = Sender(
@@ -53,7 +54,8 @@ def main():
                 error_receivers = receivers,
                 checks = checks,
                 debug=DEBUG,
-                persistanceFile=CHECKS_FILE
+                persistanceFile=CHECKS_FILE,
+                loggerFile=LOG_FILE,
                 )
     
     #a.run_with_waiting_time(wait_time=5, _break_func=a.isAllChecksAlerted)
