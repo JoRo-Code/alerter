@@ -30,19 +30,19 @@ def getJson(serviceId):
         exc_type, value, tb = sys.exc_info()
         raise FetchException(str(exc_type.__name__) + ": " + str(value) + str(traceback.extract_tb(tb)))
 
-def parse(data):
+def parse(data, serviceId):
     try:
         result = data["availability"]["fromErpOverview"]["datesWithOpeningHours"]
     except Exception:
         exc_type, value, tb = sys.exc_info()
-        raise ParseException(str(exc_type.__name__) + ": " + str(value) + str(traceback.extract_tb(tb)))
+        raise ParseException(str(serviceId) + ": " + str(exc_type.__name__) + ": " + str(value) + str(traceback.extract_tb(tb)))
     else:
         return result
 
 
 def fetchSlotsByService(serviceId):
     data = getJson(serviceId)
-    return parse(data)
+    return parse(data, serviceId)
 
 def fetchSlots():
     availableSlots = []
