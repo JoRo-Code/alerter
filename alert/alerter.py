@@ -37,7 +37,7 @@ class Alerter():
         self.checks = checks
         
         self.logger = None
-        if os.path.exists(loggerFile):
+        if loggerFile:
             self.logger = Logger(loggerFile=loggerFile)
         
         if self.debug: print(INIT_ALERTER_MSG)
