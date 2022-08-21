@@ -41,7 +41,6 @@ def getJson(serviceId):
     url = getUrl(serviceId)
     try:
         response = requests.get(url)
-        print(response.content)
 
     except Exception:
         exc_type, value, tb = sys.exc_info()
