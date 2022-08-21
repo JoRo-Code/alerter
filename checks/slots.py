@@ -1,8 +1,8 @@
 import requests
-from exceptions import ParseException, FetchException
+from checks.exceptions import ParseException, FetchException
 import sys
 import traceback
-import random
+from datetime import datetime
 
 services = {
     "Stallag fodervärd": 106767, 
@@ -14,16 +14,34 @@ services = {
     "Lunchfodring, sommar" : 600769,
 }
 
-def getUrl(serviceId):
-    sessionId = str(random.randint(1000000,9999999))+"00000"
+def calcTicks():
+    """
+    bokadirekt uses their own time measurement. 
+    Check this function if time interval is inaccurate
+    """
+    TIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
+    baseDate, baseTicks = ("2022-08-21T1:00:00", 1661040000000)
+    baseTime = datetime.strptime(baseDate, TIME_FORMAT)
+    now = datetime.today()
+    delta = now-baseTime
+    days = int(delta.total_seconds()/(3600*24))
+    weeks = int(days/7)
+    
+    ticksPerWeek =  760400000 # ticks for a week
+    ticks = baseTicks + weeks * ticksPerWeek
 
-    url = f"https://www.bokadirekt.se/api/book/{(serviceId)}/12384/{sessionId}/10650?reborn=true"
+    return ticks
+
+def getUrl(serviceId):
+    ticks = calcTicks()
+    url = f"https://www.bokadirekt.se/api/book/{(serviceId)}/12384/{ticks}/10650?reborn=true"
     return url
     
 def getJson(serviceId):
     url = getUrl(serviceId)
     try:
         response = requests.get(url)
+        print(response.content)
 
     except Exception:
         exc_type, value, tb = sys.exc_info()
