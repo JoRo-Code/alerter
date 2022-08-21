@@ -1,5 +1,5 @@
 import requests
-from checks.exceptions import ParseException, FetchException
+from exceptions import ParseException, FetchException
 import sys
 import traceback
 import random
@@ -24,11 +24,20 @@ def getJson(serviceId):
     url = getUrl(serviceId)
     try:
         response = requests.get(url)
-        return response.json()
 
     except Exception:
         exc_type, value, tb = sys.exc_info()
-        raise FetchException(str(exc_type.__name__) + ": " + str(value) + str(traceback.extract_tb(tb)))
+        raise FetchException("Error: Couldn't fetch URL. Traceback: "+ str(exc_type.__name__) + ": " + str(value) + str(traceback.extract_tb(tb)))
+    else:
+        try:
+            json = response.json()
+        except Exception:
+            exc_type, value, tb = sys.exc_info()
+            raise ParseException("Error: Couldn't parse response. " + "Response: " + str(response.content) + " Traceback: " + str(exc_type.__name__) + ": " + str(value) + str(traceback.extract_tb(tb)))
+        else:
+            return json
+        
+
 
 def parse(data, serviceId):
     try:
