@@ -9,3 +9,6 @@ config.py
 # Storage
 *.json
 *.pickle
+
+# enable ignored files
+*.ignore.*
