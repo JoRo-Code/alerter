@@ -13,4 +13,6 @@ Alerts given a certain check
 - add a `credentials.py`. See `credentials.example.py`
 ### Run
 - `python3 main.py`
+### Reset
+- `make reset`
 
