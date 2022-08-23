@@ -49,16 +49,18 @@ def shouldCompressDB():
     
         
 
-def fetchServices():
+def fetchServices() -> dict:
     url = "https://www.bokadirekt.se/places/heda-ridklubb-12384"
     page = requests.get(url)
     s = BeautifulSoup(page.content, features="html.parser")
-    services = s.find(class_='services').find_all(class_='item')
+    rawServices = s.find(class_='services').find_all('button', href=True)
     
-    result = []
-    for service in services:
-        parsedService = service.text.split("·")[0]
-        result.append(parsedService)
+    result = {}
+    for rawService in rawServices:
+        href = rawService['href']
+        serviceId = int(href.split('-')[-1])
+        title = rawService['title'].split("Boka ")[-1]
+        result[title] = serviceId
 
     return result
 
@@ -86,8 +88,11 @@ def checkIsUpdatedServices():
         
  
 def main():
+    s = fetchServices()
+    print(s)
     s = checkIsUpdatedServices()
     print(s)
+    
 
 if __name__ == '__main__':
     main()

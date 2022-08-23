@@ -1,18 +1,11 @@
 import requests
 from checks.exceptions import ParseException, FetchException
+from checks.services import fetchServices
 import sys
 import traceback
 from datetime import datetime
 
-services = {
-    "Stallag fodervärd": 106767, 
-    "Stallag privat - morgon och lunch" : 106768, 
-    "Stallag privat - insläpp och kväll" : 106769, 
-    "kvällsfodring privat": 106770,
-    "Morgon fodring privat, sommar" : 600770,
-    "Em fodring, sommar" : 106764,
-    "Lunchfodring, sommar" : 600769,
-}
+DEBUG = True
 
 def calcTicks():
     """
@@ -71,9 +64,11 @@ def fetchSlotsByService(serviceId):
     return parse(data, serviceId)
 
 def fetchSlots():
+    services = fetchServices()
     availableSlots = []
-    for service in services.values():
-        availableSlots += fetchSlotsByService(service)
+    for serviceTitle, serviceId in services.items():
+        if DEBUG: print(f"Fetching service: '{serviceTitle}' with ID: '{serviceId}'")
+        availableSlots += fetchSlotsByService(serviceId)
     
     return availableSlots
 
