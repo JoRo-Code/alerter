@@ -9,7 +9,7 @@ from alert.persistance import Logger
 
 NEGATIVE_CHECK_MSG = "Negative check"
 ERROR_SUBJECT_STR = "Error Message"
-INIT_ALERTER_MSG = "Initalized Alerter"
+INIT_ALERTER_MSG = "Initialized Alerter"
 CHECKING_CHECK_MSG = "Checking: "
 ALREADY_ALERTED_MSG= "Skipping already alerted check: "
 ALERT_MSG = "Positive check: Alerting all"
@@ -32,7 +32,10 @@ class Alerter():
         
         if os.path.exists(persistanceFile):
             checks = load_object(persistanceFile)
-            if self.debug: print("Loaded check info: " + str(checks[0]))
+            if self.debug: 
+                print(f"Loaded checks: ")
+                for check in checks:
+                    print(" - " + str(check))
         
         self.checks = checks
         

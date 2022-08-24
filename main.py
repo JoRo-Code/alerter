@@ -39,11 +39,11 @@ def main():
     
     # default checks
     checks = [
-        Check(name="Slots",
+        Check(name="Available slots",
               message = foundSlotsMessage,
               _check = fetchSlots,
               ),
-        Check(name="Services",
+        Check(name="Changed services info",
               message = changedServicessMessage,
               _check = checkIsUpdatedServices,
               ),

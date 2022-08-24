@@ -67,7 +67,7 @@ def fetchSlots():
     services = fetchServices()
     availableSlots = []
     for serviceTitle, serviceId in services.items():
-        if DEBUG: print(f"Fetching service: '{serviceTitle}' with ID: '{serviceId}'")
+        if DEBUG: print(f" - Fetching service: '{serviceTitle}' with ID: '{serviceId}'")
         availableSlots += fetchSlotsByService(serviceId)
     
     return availableSlots
