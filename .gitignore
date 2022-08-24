@@ -12,3 +12,6 @@ config.py
 
 # enable ignored files
 *.ignore.*
+
+# vscode
+.vscode/

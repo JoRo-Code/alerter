@@ -7,11 +7,11 @@ import os
 script_dir = os.path.dirname(os.path.realpath(__file__))
 db_file = script_dir + "/" + "services.json"
 db = TinyDB(db_file)
-SERVICES_KEY = 'services'
+ITEM_KEY= 'item'
 
 def addToDB(item):
     time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    db.insert({SERVICES_KEY:item, 'time':time})
+    db.insert({ITEM_KEY:item, 'time':time})
 
 def isEmptyDB():
     return db.__len__() == 0
@@ -47,6 +47,16 @@ def compressDB():
 def shouldCompressDB():
     return db.__len__() > 100
     
+def getLastStoredServices():
+    record = getLastDoc()
+    return record[ITEM_KEY]
+
+def getServicesText():
+    url = "https://www.bokadirekt.se/places/heda-ridklubb-12384"
+    page = requests.get(url)
+    s = BeautifulSoup(page.content, features="html.parser")
+    rawServices = s.find(class_='services')
+    return rawServices.text
         
 
 def fetchServices() -> dict:
@@ -64,12 +74,11 @@ def fetchServices() -> dict:
 
     return result
 
-def getLastStoredServices():
-    record = getLastDoc()
-    return record[SERVICES_KEY]
 
 def checkIsUpdatedServices():
-    new = fetchServices()
+    new = {'services': fetchServices(),
+           'text': getServicesText()
+           }
     isFirstCheck = isEmptyDB()
     if not isFirstCheck:
         prev = getLastStoredServices()

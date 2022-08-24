@@ -32,9 +32,9 @@ def main():
         body="Found slots",
     )
     
-    foundServicesMessage = Message(
+    changedServicessMessage = Message(
         subject="Alert",
-        body="Found services",
+        body="Services info changed",
     )
     
     # default checks
@@ -44,9 +44,9 @@ def main():
               _check = fetchSlots,
               ),
         Check(name="Services",
-              message = foundServicesMessage,
+              message = changedServicessMessage,
               _check = checkIsUpdatedServices,
-              )
+              ),
     ]
 
     a = Alerter(sender=sender,
