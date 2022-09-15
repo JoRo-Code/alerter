@@ -14,5 +14,8 @@ Alerts given a certain check
 ### Run
 - `python3 main.py`
 ### Reset
-- `make reset`
+- `make reset` (works on unix)
+- delete `checks.pickle` to reset alerts
+- delete .json-files to remove any other persistance
+
 
