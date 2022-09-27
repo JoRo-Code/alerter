@@ -1,6 +1,7 @@
 import requests
 from checks.exceptions import ParseException, FetchException
 from checks.services import fetchServices
+from checks.ticks import getTodaysTicks
 import sys
 import traceback
 from datetime import datetime
@@ -16,15 +17,8 @@ def calcTicks():
     bokadirekt uses their own time measurement. 
     Check this function if time interval is inaccurate
     """
-    baseDate, baseTicks = ("2022-08-21T1:00:00", 1661040000000)
-    baseTime = datetime.strptime(baseDate, TIME_FORMAT)
-    now = datetime.today()
-    delta = now-baseTime
-    days = int(delta.total_seconds()/(3600*24))
-    weeks = int(days/7)
-    
-    ticksPerWeek =  760400000 # ticks for a week
-    ticks = baseTicks + weeks * ticksPerWeek
+    if DEBUG: print(f" - Fetching ticks")
+    ticks = getTodaysTicks()
 
     return ticks
 
@@ -45,13 +39,12 @@ def verifyCheckedPeriod(rawDate:str) -> Exception:
             "WRONG SLOT PERIOD: Checked slot period is not corresponding to current week. " + 
             f"Check starting from week '{startWeek}' and not '{currentWeek}' ({startDate}). Check calcTicks-function.")
     
-def getUrl(serviceId):
-    ticks = calcTicks()
+def getUrl(serviceId:int, ticks:int):
     url = f"https://www.bokadirekt.se/api/book/{(serviceId)}/12384/{ticks}/10650?reborn=true"
     return url
     
-def getJson(serviceId):
-    url = getUrl(serviceId)
+def getJson(serviceId:int, ticks:int):
+    url = getUrl(serviceId, ticks)
     try:
         response = requests.get(url)
 
@@ -89,16 +82,17 @@ def parse(data, serviceId):
         return result
 
 
-def fetchSlotsByService(serviceId):
-    data = getJson(serviceId)
+def fetchSlotsByService(serviceId:int, ticks:int):
+    data = getJson(serviceId, ticks)
     return parse(data, serviceId)
 
 def fetchSlots():
+    ticks = calcTicks()
     services = fetchServices()
     availableSlots = []
     for serviceTitle, serviceId in services.items():
         if DEBUG: print(f" - Fetching service: '{serviceTitle}' with ID: '{serviceId}'")
-        availableSlots += fetchSlotsByService(serviceId)
+        availableSlots += fetchSlotsByService(serviceId, ticks)
     
     if DEBUG: print(f" - Checked slots from '{checkedStartDate}'")
     
