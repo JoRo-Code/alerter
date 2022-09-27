@@ -61,7 +61,10 @@ class SessionStorage:
     def __repr__(self):
         return self.items().__str__()
 
-def getTodaysTicks() -> int:
+def getTodaysTicks(sleep_time:int=1) -> int:
+    if sleep_time > 50:
+        # infinite loop handler
+        raise Exception("Sleep time is extremely high, terminating")
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
@@ -69,14 +72,13 @@ def getTodaysTicks() -> int:
     url = 'https://www.bokadirekt.se/boka-tjanst/heda-ridklubb-12384/stallag-foderv%C3%A4rd-morgon-och-eftermiddag-106767'
     driver.get(url)
     storage = SessionStorage(driver)
-    sleep(1) # waiting for page to load
+    sleep(sleep_time) # waiting for page to load
     try:
         bookDateStr = storage["bookDate"]
         d = json.loads(bookDateStr)
         ticks = d["timestamp"]
-    except Exception as e:
-        driver.close()
-        raise Exception("Couldn't get todays timestamp. Adjust wait time", e)
+    except:
+        return getTodaysTicks(sleep_time=sleep_time*2)
     else:
         driver.close()
         return int(ticks)

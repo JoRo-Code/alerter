@@ -4,7 +4,7 @@ Alerts given a certain check
 
 ## Requirements
 - python3 
-- libraries: smtplib, email, bs4, tinydb, pickle
+- libraries: smtplib, email, bs4, tinydb, pickle, selenium
 
 ## Usage
 ### Setup
