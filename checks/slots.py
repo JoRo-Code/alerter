@@ -48,12 +48,18 @@ def getJson(serviceId:int, ticks:int):
     try:
         response = requests.get(url)
 
+    except ConnectionError as e:
+        if DEBUG: print("Found connection error while fetching url.")
+        raise e
     except Exception:
         exc_type, value, tb = sys.exc_info()
         raise FetchException("Error: Couldn't fetch URL. Traceback: "+ str(exc_type.__name__) + ": " + str(value) + str(traceback.extract_tb(tb)))
     else:
         try:
             json = response.json()
+        except ConnectionError as e:
+            if DEBUG: print("Found connection error while parsing response: ")
+            raise e
         except Exception:
             exc_type, value, tb = sys.exc_info()
             raise ParseException("Error: Couldn't parse response. " + "Response: " + str(response.content) + " Traceback: " + str(exc_type.__name__) + ": " + str(value) + str(traceback.extract_tb(tb)))

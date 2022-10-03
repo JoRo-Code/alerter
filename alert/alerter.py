@@ -13,6 +13,7 @@ INIT_ALERTER_MSG = "Initialized Alerter"
 CHECKING_CHECK_MSG = "Checking: "
 ALREADY_ALERTED_MSG= "Skipping already alerted check: "
 ALERT_MSG = "Positive check: Alerting all"
+CONNECTION_ERROR_MSG = "Alerter found connection error. Continuing"
 
 class Alerter():
     def __init__(self, 
@@ -92,7 +93,9 @@ class Alerter():
         try:
             if self.debug: print(CHECKING_CHECK_MSG + check.name)
             shouldAlert = check.run()
-            
+        
+        except ConnectionError as e:
+            if self.debug: print(CONNECTION_ERROR_MSG)
         except Exception as e:
             if self.debug: print(e)
             
