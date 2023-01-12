@@ -16,6 +16,15 @@ script_dir = os.path.dirname(os.path.realpath(__file__))
 CHECKS_FILE = script_dir + "/checks/" + "checks.pickle"
 LOG_FILE= script_dir + "/" + "logger.json"
 
+serviceIDS = [
+    106768, # Stallag privathäst morgon och lunch
+    106769, # Stallag Privathäst insläpp och kväll
+    #106770, # Kvällsfodring privathäst
+]
+
+def fetchSlotIDS():
+    return fetchSlots(serviceIDS)
+
 def main():
     sender = Sender(
         password= PASSWORD,
@@ -36,12 +45,14 @@ def main():
         subject="Alert",
         body="Services info changed",
     )
+
+
     
     # default checks
     checks = [
         Check(name="Available slots",
               message = foundSlotsMessage,
-              _check = fetchSlots,
+              _check = fetchSlotIDS,
               ),
         Check(name="Changed services info",
               message = changedServicessMessage,
@@ -51,7 +62,7 @@ def main():
 
     a = Alerter(sender=sender,
                 receivers = receivers,
-                error_receivers = receivers,
+                error_receivers = [receivers[0]], # first receiver
                 checks = checks,
                 debug=DEBUG,
                 persistanceFile=CHECKS_FILE,

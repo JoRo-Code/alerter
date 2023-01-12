@@ -65,9 +65,23 @@ class Alerter():
         for receiver in receivers:
             self.alert(receiver, message)
             
-    def checkAlertAll(self, check):
+    def checkAlertAll(self, check, result = None):
         check.setAlerted()
-        self.alertAll(self.receivers, check.message) 
+            
+        if isinstance(result, bool):
+            self.alertAll(self.receivers, check.message)
+            return
+
+        'if slots check'
+        body = ''
+        for slot in result.values():
+            name = slot['name']
+            slots = slot['slots']
+            body += f"{name}: {slots}\n"
+            
+        message = Message(subject=f'Alert - {check.name}', body=body)
+        
+        self.alertAll(self.receivers, message) 
         
     def errorAlertAll(self, error_message):
         self.alertAll(self.error_receivers, error_message) 
@@ -92,10 +106,12 @@ class Alerter():
     def run_check(self, check):
         try:
             if self.debug: print(CHECKING_CHECK_MSG + check.name)
-            shouldAlert = check.run()
+            result = check.run()
+            shouldAlert = result
         
         except ConnectionError as e:
             if self.debug: print(CONNECTION_ERROR_MSG)
+            self.log(e)
         except Exception as e:
             if self.debug: print(e)
             
@@ -109,7 +125,7 @@ class Alerter():
         else:
             if shouldAlert:
                 if self.debug: print(ALERT_MSG)
-                self.checkAlertAll(check)
+                self.checkAlertAll(check, result)
             else:
                 if self.debug: print(NEGATIVE_CHECK_MSG)
     

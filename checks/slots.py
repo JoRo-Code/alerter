@@ -5,6 +5,9 @@ from checks.ticks import getTodaysTicks
 import sys
 import traceback
 from datetime import datetime
+#from exceptions import ParseException, FetchException
+#from services import fetchServices
+#from ticks import getTodaysTicks
 
 DEBUG = True
 TIME_FORMAT = "%Y-%m-%dT%H:%M:%S"
@@ -92,20 +95,33 @@ def fetchSlotsByService(serviceId:int, ticks:int):
     data = getJson(serviceId, ticks)
     return parse(data, serviceId)
 
-def fetchSlots():
+def fetchSlots(serviceIDS:list[int] = None) -> dict:
     ticks = calcTicks()
     services = fetchServices()
-    availableSlots = []
-    for serviceTitle, serviceId in services.items():
+        
+    availableSlots = {}
+    for serviceId, serviceTitle in services.items():
+        if serviceIDS and serviceId not in serviceIDS:
+            continue
         if DEBUG: print(f" - Fetching service: '{serviceTitle}' with ID: '{serviceId}'")
-        availableSlots += fetchSlotsByService(serviceId, ticks)
+        slots = fetchSlotsByService(serviceId, ticks)
+        if slots:
+            availableSlots[serviceId] = {
+                'slots':slots,
+                'name':serviceTitle
+            }
     
     if DEBUG: print(f" - Checked slots from '{checkedStartDate}'")
     
     return availableSlots
 
 def main():
-    s = fetchSlots()
+    serviceIDS = [
+        106768, # Stallag privathäst morgon och lunch
+        106769, # Stallag Privathäst insläpp och kväll
+        106770, # Kvällsfodring privathäst
+    ]
+    s = fetchSlots(serviceIDS)
     print(s)
 
 if __name__ == '__main__':

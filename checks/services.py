@@ -60,17 +60,22 @@ def getServicesText():
         
 
 def fetchServices() -> dict:
+    result = {}
     url = "https://www.bokadirekt.se/places/heda-ridklubb-12384"
     page = requests.get(url)
     s = BeautifulSoup(page.content, features="html.parser")
-    rawServices = s.find(class_='services').find_all('button', href=True)
+    rawButtons = s.find(class_='services')
     
-    result = {}
+    if not rawButtons:
+        return result
+    
+    rawServices = rawButtons.find_all('button', href=True)
+    
     for rawService in rawServices:
         href = rawService['href']
         serviceId = int(href.split('-')[-1])
         title = rawService['title'].split("Boka ")[-1]
-        result[title] = serviceId
+        result[serviceId] = title
 
     return result
 
@@ -93,8 +98,6 @@ def checkIsUpdatedServices():
         return False
         
     return new != prev
-
-        
  
 def main():
     s = fetchServices()
