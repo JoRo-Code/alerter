@@ -5,6 +5,8 @@ from selenium.webdriver.chrome.options import Options
 
 from time import sleep
 import json
+from typing import Tuple
+from datetime import datetime
 
 class SessionStorage:
 
@@ -60,8 +62,51 @@ class SessionStorage:
 
     def __repr__(self):
         return self.items().__str__()
+    
 
-def getTodaysTicks(sleep_time:int=1) -> int:
+import os
+script_dir = os.path.dirname(os.path.realpath(__file__))
+ticks_file = script_dir + "/" + "ticks.json"
+
+def readTicksFromMemory() -> Tuple[int, datetime]:
+    try:
+        with open(ticks_file, "r") as f:
+            ticks_info = json.load(f)
+            
+            ticks = ticks_info["ticks"]
+            raw_date = ticks_info["timestamp"]
+            date = datetime.strptime(raw_date, "%d/%m/%Y %H:%M:%S")
+    except:
+        with open(ticks_file, 'w') as f:
+            f.write('')
+        
+        ticks = 0
+        date = datetime(2000, 1,1)
+
+    return ticks, date
+
+def saveTicksInMemory(ticks:int):    
+    
+    time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    ticks_info = {
+        'ticks': ticks,
+        'timestamp': time,
+    }
+    with open(ticks_file, 'w') as f:
+        json.dump(ticks_info, f, ensure_ascii=False, indent=4)
+    
+
+def getTodaysTicks() -> int:
+    update_ticks_interval = 60*60*24 # once a day
+    ticks, date = readTicksFromMemory()
+    now = datetime.now()
+    if (now-date).total_seconds() > update_ticks_interval:
+        ticks = getTodaysTicksFromBrowser()
+        saveTicksInMemory(ticks)
+    return ticks
+         
+
+def getTodaysTicksFromBrowser(sleep_time:int=1) -> int: 
     if sleep_time > 50:
         # infinite loop handler
         raise Exception("Sleep time is extremely high, terminating")
@@ -78,7 +123,7 @@ def getTodaysTicks(sleep_time:int=1) -> int:
         d = json.loads(bookDateStr)
         ticks = d["timestamp"]
     except:
-        return getTodaysTicks(sleep_time=sleep_time*2)
+        return getTodaysTicksFromBrowser(sleep_time=sleep_time*2)
     else:
         driver.close()
         return int(ticks)
