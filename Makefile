@@ -7,4 +7,8 @@ reset:
 restart:
 # removing json and pickle files
 	find -name "*.pickle" | xargs rm
+
+reset_alerts:
+	find -name "*.pickle" | xargs rm
+
 	
