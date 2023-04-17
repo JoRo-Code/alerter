@@ -1,14 +1,17 @@
 
 # What?
-Alerts given a certain check
+Sends an alert when certain services at Bokadirekt is available. 
+
+# Why?
+Gives an advantage to book the services faster than others, since the public alert goes off ~15-30 minutes after the actual published services.
 
 ## Requirements
 - python3 
-- libraries: smtplib, email, bs4, tinydb, pickle, selenium
+- libraries: see `requirements.txt`
 
 ## Usage
 ### Setup
-- install python libraries: `pip3 install <library>`
+- install python libraries: `pip3 install -r requirements.txt`
 - add a `config.py`. See `config.example.py`
 - add a `credentials.py`. See `credentials.example.py`
 ### Run

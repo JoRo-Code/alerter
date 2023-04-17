@@ -15,3 +15,5 @@ config.py
 
 # vscode
 .vscode/
+
+venv/
