@@ -97,10 +97,13 @@ def saveTicksInMemory(ticks:int):
     
 
 def getTodaysTicks() -> int:
+    def get_week(date:datetime) -> int:
+        return date.isocalendar().week
     update_ticks_interval = 60*60*24 # once a day
     ticks, date = readTicksFromMemory()
     now = datetime.now()
-    if (now-date).total_seconds() > update_ticks_interval:
+    is_new_week = get_week(date) != get_week(now)
+    if (now-date).total_seconds() > update_ticks_interval or is_new_week:
         ticks = getTodaysTicksFromBrowser()
         saveTicksInMemory(ticks)
     return ticks
