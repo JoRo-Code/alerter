@@ -90,6 +90,7 @@ def checkIsUpdatedServices():
 
     # update db
     addToDB(new)
+    new = getLastStoredServices()
     
     if shouldCompressDB():
         compressDB()
