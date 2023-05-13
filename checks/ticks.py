@@ -2,6 +2,7 @@
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 
 from time import sleep
 import json
@@ -115,7 +116,8 @@ def getTodaysTicksFromBrowser(sleep_time:int=1) -> int:
         raise Exception("Sleep time is extremely high, terminating")
     chrome_options = Options()
     chrome_options.add_argument("--headless")
-    driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+    browser_driver = Service("/usr/bin/chromedriver")
+    driver = webdriver.Chrome(service=browser_driver,options=chrome_options)
 
     url = 'https://www.bokadirekt.se/boka-tjanst/heda-ridklubb-12384/stallag-foderv%C3%A4rd-morgon-och-eftermiddag-106767'
     driver.get(url)
